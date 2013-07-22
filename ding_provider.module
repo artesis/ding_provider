@@ -426,6 +426,8 @@ function ding_provider_ajax_form_callback() {
         );
       }
     }
+
+    watchdog_exception('ding_provider', $e);
   }
 
   // Else show internal error.
