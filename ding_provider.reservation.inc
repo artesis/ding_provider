@@ -216,6 +216,16 @@ class DingProviderReservation extends DingEntityBase {
       return $this->language = $this->entity->getLanguage();
     }
   }
+
+  function getIll_Status() {
+    $this->ill_status = NULL;
+    if (!empty($this->properties['ill_status'])) {
+      if ($this->properties['ill_status'] != DingEntityBase::NULL) {
+        $this->ill_status = $this->properties['ill_status'];
+      }
+    }
+    return $this->ill_status;
+  }
 }
 
 /**
