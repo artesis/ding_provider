@@ -29,8 +29,7 @@ function ding_provider_requirements($phase) {
         '@providers' => implode(', ', $providermodules),
         '%type'      => $providertype,
         '@module'    => end($providermodules),
-      )
-      );
+      ));
     }
   }
 
@@ -71,7 +70,7 @@ function ding_provider_menu() {
     'title' => 'Ding provider',
     'page callback' => 'ding_provider_admin_overview',
     'access arguments' => array('administer ding provider'),
-    'file' => 'ding_provider.admin.inc'
+    'file' => 'ding_provider.admin.inc',
   );
 
   $items['admin/config/ding/provider/overview'] = array(
@@ -422,11 +421,13 @@ function ding_provider_ajax_form_callback() {
         return array(
           '#type' => 'ajax',
           '#commands' => array(
-            ajax_command_ding_user_authenticate(array('dp_form_id' => $form_id))
+            ajax_command_ding_user_authenticate(array('dp_form_id' => $form_id)),
           ),
         );
       }
     }
+
+    watchdog_exception('ding_provider', $e);
   }
 
   // Else show internal error.

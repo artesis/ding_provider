@@ -82,6 +82,8 @@ class DingProviderLoginTestCase extends DrupalWebTestCase {
   }
 }
 
+require_once __DIR__ . '/../../ding_popup/ding_popup.test';
+
 class DingProviderAjaxLoginTestCase extends DingPopupTestCase {
   public static function getInfo() {
     return array(

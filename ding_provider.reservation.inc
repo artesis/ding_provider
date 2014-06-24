@@ -51,7 +51,7 @@ class DingProviderReservation extends DingEntityBase {
    * Order Id
    */
   protected $order_id = DingEntityBase::NULL;
-  
+
   /**
    * Organisation Id
    */
@@ -73,7 +73,7 @@ class DingProviderReservation extends DingEntityBase {
    * or DingProviderReservation::STATUS_FECTHABLE.
    */
   protected $status = DingEntityBase::NULL;
-  
+
   /**
    * Delete status of the reservation, either yes or no
    */
@@ -192,36 +192,47 @@ class DingProviderReservation extends DingEntityBase {
   function getTitle() {
     $this->getEntity();
     if ($this->entity) {
-      return $this->title = $this->entity->title;
+      return $this->title = $this->entity->getTitle();
     }
   }
 
   function getCreator() {
     $this->getEntity();
     if ($this->entity) {
-      return $this->creator = $this->entity->creator;
+      return $this->creator = $this->entity->getCreators();
     }
   }
 
   function getType() {
     $this->getEntity();
     if ($this->entity) {
-      return $this->type = $this->entity->type;
+      return $this->type = $this->entity->getType();
     }
   }
 
   function getLanguage() {
     $this->getEntity();
     if ($this->entity) {
-      return $this->language = $this->entity->language;
+      return $this->language = $this->entity->getLanguage();
     }
+  }
+
+  function getIll_Status() {
+    $this->ill_status = NULL;
+    if (!empty($this->properties['ill_status'])) {
+      if ($this->properties['ill_status'] != DingEntityBase::NULL) {
+        $this->ill_status = $this->properties['ill_status'];
+      }
+    }
+    return $this->ill_status;
   }
 }
 
 /**
  * Parent class for reservation errors.
  */
-class DingProviderReservationUserError extends DingProviderUserException { }
+class DingProviderReservationUserError extends DingProviderUserException {
+}
 
 /**
  * Exception thrown when the item is already reserved.
