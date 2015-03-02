@@ -70,12 +70,12 @@ class DingProviderLoan extends DingEntityBase {
   /**
    * Notes - some additional information.
    */
-  protected $notes  = DingEntityBase::NULL;
+  protected $notes = DingEntityBase::NULL;
 
   /**
    * Message - A message with a reason for why a loan is not renewable
    */
-  protected $message  = DingEntityBase::NULL;
+  protected $message = DingEntityBase::NULL;
 
   public function __construct($id, $data = array()) {
     parent::__construct();
@@ -116,28 +116,28 @@ class DingProviderLoan extends DingEntityBase {
   function getTitle() {
     $this->getEntity();
     if ($this->entity) {
-      return $this->title = $this->entity->title;
+      return $this->title = $this->entity->getTitle();
     }
   }
 
   function getCreator() {
     $this->getEntity();
     if ($this->entity) {
-      return $this->creator = $this->entity->creator;
+      return $this->creator = $this->entity->getCreators();
     }
   }
 
   function getType() {
     $this->getEntity();
     if ($this->entity) {
-      return $this->type = $this->entity->type;
+      return $this->type = $this->entity->getType();
     }
   }
 
   function getLanguage() {
     $this->getEntity();
     if ($this->entity) {
-      return $this->language = $this->entity->language;
+      return $this->language = $this->entity->getLanguage();
     }
   }
 }
@@ -145,5 +145,6 @@ class DingProviderLoan extends DingEntityBase {
 /**
  * Parent class for loan errors.
  */
-class DingProviderLoanUserError extends DingProviderUserException {}
+class DingProviderLoanUserError extends DingProviderUserException {
+}
 

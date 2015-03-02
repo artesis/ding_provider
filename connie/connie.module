@@ -64,13 +64,13 @@ function connie_profile_update($profile, $data) {
  */
 function connie_profile2_presave($profile) {
   if (// Only work on our own profile type.
-      $profile->type == 'provider_connie' &&
-      // Don't try to sync to backend if called from profile_init, the
-      // profile has just been updated with data from the backend and
-      // is being saved locally.
-      !isset($profile->connie_init) &&
-      // Check that there's actually changed something.
-      $profile->connie_preferred_branch != $profile->original->connie_preferred_branch) {
+  $profile->type == 'provider_connie' &&
+  // Don't try to sync to backend if called from profile_init, the
+  // profile has just been updated with data from the backend and
+  // is being saved locally.
+  !isset($profile->connie_init) &&
+  // Check that there's actually changed something.
+  $profile->connie_preferred_branch != $profile->original->connie_preferred_branch) {
     $langs = field_language('profile2', $profile);
     $changes['preferred_branch'] = $profile->connie_preferred_branch[$langs['connie_preferred_branch']][0]['value'];
 

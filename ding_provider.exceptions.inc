@@ -9,17 +9,20 @@
  * Exception that is thrown by providers when the given operation
  * cannot be completed until the user authenticates.
  */
-class DingProviderAuthException extends Exception { }
+class DingProviderAuthException extends Exception {
+}
 
 /**
  * Thrown when no provider is configured for the given provider.
  */
-class DingProviderNoProvider extends Exception { }
+class DingProviderNoProvider extends Exception {
+}
 
 /**
  * Thrown when provider doesn't implement the given function.
  */
-class DingProviderDoesntImplement extends Exception { }
+class DingProviderDoesntImplement extends Exception {
+}
 
 /**
  * Exception class that can provide a translated and substituted
@@ -83,9 +86,9 @@ class DingProviderUserException extends Exception {
 
 class DingProviderException extends Exception {
   private $callback;
-  
+
   public function getCallback() {
-    if(isset($this->callback)) {
+    if (isset($this->callback)) {
       return $callback;
     }
   }
