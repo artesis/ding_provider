@@ -376,7 +376,7 @@ function ding_provider_ajax_form_callback() {
         unset($form_state['input']['#ding_provider_messages']);
         unset($form_state['input']['#ding_provider_user']);
         cache_clear_all('ding_provider_' . $form_id, 'cache_form');
-        // Form was cached and we should regenerated token for it, otherwise we will gate invalid_token situation.
+        // Form was cached and we should regenerated token for it, otherwise we will get invalid_token situation.
         $token = drupal_get_token($form_id);
       }
     }
