@@ -364,6 +364,7 @@ function ding_provider_build_form($form_id, &$form_state) {
 function ding_provider_ajax_form_callback() {
   global $user;
   $messages = NULL;
+  $token = FALSE;
   try {
     if (isset($_REQUEST['dp_form_id']) && !empty($_REQUEST['dp_form_id'])) {
       $form_id = (string) $_REQUEST['dp_form_id'];
@@ -375,6 +376,8 @@ function ding_provider_ajax_form_callback() {
         unset($form_state['input']['#ding_provider_messages']);
         unset($form_state['input']['#ding_provider_user']);
         cache_clear_all('ding_provider_' . $form_id, 'cache_form');
+        // Form was cached and we should regenerated token for it, otherwise we will get invalid_token situation.
+        $token = drupal_get_token($form_id);
       }
     }
 
@@ -386,12 +389,12 @@ function ding_provider_ajax_form_callback() {
       $user = $orig_user;
     }
     list($form, $form_state, $form_id) = ajax_get_form();
+    $form_state['input']['form_token'] = $token ? drupal_get_token($form_id) : $form_state['input']['form_token'];
     if (isset($new_user)) {
       $user = $new_user;
     }
 
     drupal_process_form($form['#form_id'], $form, $form_state);
-
     // Set any messages we saved.
     _ding_provider_message_reset($messages);
 
