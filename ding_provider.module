@@ -618,7 +618,7 @@ function ding_provider_build_entity_id($id, $agency = -1) {
   switch ($agency) {
     case $local_agency:
     case -1:
-      if (preg_match('/^' . $local_range . '/', $id)) {
+      if (preg_match('/^[0-9]{' . $local_range . '}/', $id)) {
         // If agency is not given fallback to local agency.
         if (empty($agency) || $agency == -1) {
           $agency = $local_agency;
