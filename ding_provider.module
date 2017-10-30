@@ -653,8 +653,17 @@ function ding_provider_build_entity_id($ids) {
     return $translated_ids;
   }
   elseif (is_numeric($ids)) {
+    $entity_id = NULL;
     $obj = ting_do_search('rec.id=' . $ids . ' AND facet.acSource=bibliotekskatalog');
-    $entity_id = ($obj) ? key($obj->collections) : '870970-basis:' . $ids;
+    if ($obj) {
+      $current = $obj->current();
+      if ($current) {
+        $entity_id = $current->ding_entity_id;
+      }
+      else {
+        $entity_id = ($obj) ? key($obj->collections) : '870970-basis:' . $ids;
+      }
+    }
 
     return $entity_id;
   }
