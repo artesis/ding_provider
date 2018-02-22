@@ -608,30 +608,38 @@ function _ding_provider_function($type, $hook, $quiet = FALSE) {
  *   In both cases, if a faust couldn't be translated, the PID will be the
  *   original faust with the standard DBC namespace "870970-basis:".
  */
-function ding_provider_build_entity_id($ids) {
-  if (is_array($ids) && !empty($ids)) {
-    $translated_ids = array();
+function ding_provider_lookup_entity_id($ids) {
+  $translated_ids = &drupal_static(__FUNCTION__.serialize($ids), array());
 
+  if (!empty($translated_ids)) {
+    return $translated_ids;
+  }
+
+  if (is_array($ids) && !empty($ids)) {
     // Open search is limited to 50 results per call, so split up in chunks to
     // ensure we get PIDs for all passed local IDs.
     foreach (array_chunk($ids, 50) as $chunk) {
       $query = 'rec.id any "' . implode(" ", $chunk) . '" AND facet.acSource=bibliotekskatalog';
       // Ensure that the work match in opensearch doesn't hide ids for us.
       $options['collectionType'] = 'manifestation';
-      $res = ting_do_search($query, 1, count($chunk), $options);
+      $search_result = ting_do_search($query, 1, count($chunk), $options);
 
       // Sometimes the well will be unreachable or not even one of the ids in
       // chunk was searchable. In any case, this protects against a notice.
-      if (empty($res)) {
+      if (empty($search_result)) {
         continue;
       }
 
-      foreach ($res->collections as $pid => $collection) {
-        $faust = explode(':', $pid)[1];
+      $search_result->rewind();
+      /** @var TingEntity $item */
+      while ($search_result->valid() && $item = $search_result->current()) {
+        $faust = explode(':', $item->getId())[1];
         if ($key = array_search($faust, $ids)) {
-          $translated_ids[$faust] = $pid;
+          $translated_ids[$faust] = $item->getId();
           unset($ids[$key]);
         }
+
+        $search_result->next();
       }
     }
 
@@ -654,18 +662,17 @@ function ding_provider_build_entity_id($ids) {
   }
   elseif (is_numeric($ids)) {
     $entity_id = NULL;
-    $obj = ting_do_search('rec.id=' . $ids . ' AND facet.acSource=bibliotekskatalog');
-    if ($obj) {
-      $current = $obj->current();
+    $search_result = ting_do_search('rec.id=' . $ids . ' AND facet.acSource=bibliotekskatalog');
+    if ($search_result) {
+      $current = $search_result->current();
       if ($current) {
-        $entity_id = $current->ding_entity_id;
+        $translated_ids[] = $current->ding_entity_id;
       }
       else {
-        $entity_id = ($obj) ? key($obj->collections) : '870970-basis:' . $ids;
+        $translated_ids[] = ($search_result) ? key($search_result->collections) : '870970-basis:' . $ids;
       }
     }
-
-    return $entity_id;
   }
-  return FALSE;
+
+  return $translated_ids;
 }
