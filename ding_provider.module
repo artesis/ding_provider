@@ -720,6 +720,16 @@ function ding_provider_build_entity_id($ids) {
       }
     }
 
+    if (!empty($items = $res->getItems())) {
+      foreach ($items as $item) {
+        $id = $item->getId();
+        $faust = explode(':', $id)[1];
+        if ($key = array_search($faust, $ids)) {
+          $translated_ids[$faust] = $id;
+          unset($ids[$key]);
+        }
+      }
+    }
     // The faust left in ids array where not searchable and we could therefore
     // not determine the proper namespace. Since it's possible to load objects
     // separately, that are not searchable with the library's agencyid, the best
