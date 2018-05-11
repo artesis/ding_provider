@@ -116,6 +116,33 @@ class DingProviderLoan extends DingEntityBase {
     $this->_populate($properties, $data);
   }
 
+  public function __get($prop) {
+    if (array_key_exists($prop, $this->properties)) {
+      if ($this->properties[$prop] === self::NULL) {
+        if (($method = 'get' . strtoupper($prop[0]) . substr($prop, 1)) && method_exists($this, $method)) {
+          $this->properties[$prop] = call_user_func(array($this, $method));
+        }
+        else {
+          $trace = debug_backtrace();
+          trigger_error('No getter defined for ' . $prop .
+            ' in ' . $trace[0]['file'] .
+            ' on line ' . $trace[0]['line'],
+            E_USER_NOTICE);
+          return NULL;
+        }
+      }
+      return $this->properties[$prop];
+    }
+
+    $trace = debug_backtrace();
+    trigger_error('Undefined property via __get(): ' . $prop .
+      ' in ' . $trace[0]['file'] .
+      ' on line ' . $trace[0]['line'],
+      E_USER_NOTICE);
+
+    return NULL;
+  }
+
   function getEntity() {
     if (!isset($this->entity)) {
       if (!empty($this->ding_entity_id)) {
