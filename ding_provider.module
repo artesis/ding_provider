@@ -694,7 +694,10 @@ function ding_provider_lookup_entity_id($ids) {
  *   original faust with the standard DBC namespace "870970-basis:".
  */
 function ding_provider_build_entity_id($ids) {
-  if (is_array($ids) && !empty($ids)) {
+  $cid = serialize($ids);
+  $cache = &drupal_static($cid, FALSE);
+
+  if (is_array($ids) && !empty($ids) && empty($cache)) {
     $translated_ids = array();
 
     // Open search is limited to 50 results per call, so split up in chunks to
@@ -711,17 +714,7 @@ function ding_provider_build_entity_id($ids) {
         continue;
       }
 
-      foreach ($res->collections as $pid => $collection) {
-        $faust = explode(':', $pid)[1];
-        if ($key = array_search($faust, $ids)) {
-          $translated_ids[$faust] = $pid;
-          unset($ids[$key]);
-        }
-      }
-    }
-
-    if (!empty($items = $res->getItems())) {
-      foreach ($items as $item) {
+      foreach ($res->getItems() as $item) {
         $id = $item->getId();
         $faust = explode(':', $id)[1];
         if ($key = array_search($faust, $ids)) {
@@ -730,6 +723,7 @@ function ding_provider_build_entity_id($ids) {
         }
       }
     }
+
     // The faust left in ids array where not searchable and we could therefore
     // not determine the proper namespace. Since it's possible to load objects
     // separately, that are not searchable with the library's agencyid, the best
@@ -745,13 +739,15 @@ function ding_provider_build_entity_id($ids) {
       $translated_ids[$faust] = '870970-basis:' . $faust;
     }
 
-    return $translated_ids;
+    $cache = $translated_ids;
   }
   elseif (is_numeric($ids)) {
-    $obj = ting_do_search('rec.id=' . $ids . ' AND facet.acSource=bibliotekskatalog');
-    $entity_id = ($obj) ? key($obj->collections) : '870970-basis:' . $ids;
+    $result = ting_do_search('rec.id=' . $ids . ' AND facet.acSource=bibliotekskatalog');
+    $result_items = $result->getItems();
+    $entity_id = is_array($result_items) ? $result_items[0]->getId() : '870970-basis:' . $ids;
 
-    return $entity_id;
+    $cache = $entity_id;
   }
-  return FALSE;
+
+  return $cache;
 }
