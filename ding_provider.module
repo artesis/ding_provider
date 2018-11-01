@@ -625,6 +625,7 @@ function ding_provider_build_entity_id($ids) {
       $query = 'rec.id any "' . implode(" ", $chunk) . '" AND facet.acSource=bibliotekskatalog';
       // Ensure that the work match in opensearch doesn't hide ids for us.
       $options['collectionType'] = 'manifestation';
+
       $res = ting_do_search($query, 1, count($chunk), $options);
 
       // Sometimes the well will be unreachable or not even one of the ids in
@@ -636,7 +637,7 @@ function ding_provider_build_entity_id($ids) {
       foreach ($res->getItems() as $item) {
         $id = $item->getId();
         $faust = explode(':', $id)[1];
-        if ($key = array_search($faust, $ids)) {
+        if (FALSE !== ($key = array_search($faust, $ids))) {
           $translated_ids[$faust] = $id;
           unset($ids[$key]);
         }
