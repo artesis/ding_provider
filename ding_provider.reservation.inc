@@ -250,7 +250,7 @@ class DingProviderReservationExists extends DingProviderReservationUserError {
  * The item is not available for reservation.
  */
 class DingProviderReservationNotAvailable extends DingProviderReservationUserError {
-  public function __construct($message = "", $code = 0) {
+  public function __construct($message = '', $code = 0) {
     if (empty($message)) {
       $message = t('"@title" is not available for reservation.');
     }
@@ -262,9 +262,21 @@ class DingProviderReservationNotAvailable extends DingProviderReservationUserErr
  * Reservation is not allowed.
  */
 class DingProviderReservationNotAllowed extends DingProviderReservationUserError {
-  public function __construct($message = "", $code = 0) {
+  public function __construct($message = '', $code = 0) {
     if (empty($message)) {
       $message = t("You're not allowed to reserve \"@title\".");
+    }
+    parent::__construct($message);
+  }
+}
+
+/**
+ * The item was already lent.
+ */
+class DingProviderReservationBorrowed extends DingProviderReservationUserError {
+  public function __construct($message = '', $code = 0) {
+    if (empty($message)) {
+      $message = t("'@title' already lent to borrower.");
     }
     parent::__construct($message);
   }
