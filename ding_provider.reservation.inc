@@ -226,6 +226,24 @@ class DingProviderReservation extends DingEntityBase {
     }
     return $this->ill_status;
   }
+
+  /**
+   * Get notes property.
+   */
+  function getNotes() {
+    $this->getEntity();
+
+    if ($this->entity) {
+      $this->notes = $this->entity->getNotes();
+    }
+    else {
+      if ($this->properties['notes']) {
+        $this->notes = $this->properties['notes'];
+      }
+    }
+
+    return $this->notes;
+  }
 }
 
 /**
